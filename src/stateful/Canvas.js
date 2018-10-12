@@ -21,7 +21,7 @@ class Canvas extends Component{
         }
     }
 
-
+    //draws the ship. Used as a utility function by other this.move()
     drawShip(color, lineWidth){
         
         const ctx = this.refs.canvas.getContext('2d');
@@ -36,40 +36,31 @@ class Canvas extends Component{
         
         ctx.lineWidth = lineWidth;
         
-        ctx.strokeStyle = color;
+        ctx.strokeStyle = "#ffffff";
         ctx.moveTo(currentX, currentY);
         currentX -= 32;
         currentY += 16
         ctx.lineTo(currentX, currentY);
-        ctx.stroke();
 
         //second line of ship
-        ctx.beginPath()
-        ctx.lineWidth = lineWidth;
-        ctx.moveTo(currentX, currentY)
         currentX += 8;
         currentY -= 16;
         ctx.lineTo(currentX, currentY);
-        ctx.stroke();
 
         //third line of ship
-        ctx.beginPath()
-        ctx.lineWidth = lineWidth;
-        ctx.moveTo(currentX, currentY)
         currentX -= 8;
         currentY -= 16;
         ctx.lineTo(currentX, currentY);
-        ctx.stroke();
 
         //fourth line of ship
-        ctx.beginPath();
-        ctx.lineWidth = lineWidth;
-        ctx.moveTo(currentX, currentY);
-        ctx.lineTo(this.state.shipPosition.x, this.state.shipPosition.y);
-        ctx.stroke();        
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fillStyle = color;
+        ctx.fill()
+        
     }
 
-
+    //updates the state to reflect movement by wsad and redraws the ship.
     move = () =>{
         let prevState = {...this.state};
         let currentPosition = {...prevState.shipPosition}
@@ -96,9 +87,10 @@ class Canvas extends Component{
             }
                 
          
-        this.drawShip(this.state.shipColor, 1);
+        this.drawShip(this.state.shipColor, 2);
     }
 
+    //function called by setInterval, responsible for redraws of the canvas.
     drawCanvas = () => {
         const ctx = this.refs.canvas.getContext('2d');
         ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
@@ -106,6 +98,7 @@ class Canvas extends Component{
         this.move();
     }
 
+    //updates keymap in state, will set boolean values to true or false on keydown and keyup 
     adjustKeyMap(event){
         if(event.type === "keydown"){
             const keyMap = {...this.state.keyMap}
