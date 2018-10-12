@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ShipSVG from "../stateless/shipDrawing"
 
 class Canvas extends Component{
     constructor(props){
@@ -26,37 +27,7 @@ class Canvas extends Component{
         
         const ctx = this.refs.canvas.getContext('2d');
         
-        let currentX = this.state.shipPosition.x;
-        
-        let currentY = this.state.shipPosition.y;
-
-        //first line of ship
-        
-        ctx.beginPath();
-        
-        ctx.lineWidth = lineWidth;
-        
-        ctx.strokeStyle = "#ffffff";
-        ctx.moveTo(currentX, currentY);
-        currentX -= 32;
-        currentY += 16
-        ctx.lineTo(currentX, currentY);
-
-        //second line of ship
-        currentX += 8;
-        currentY -= 16;
-        ctx.lineTo(currentX, currentY);
-
-        //third line of ship
-        currentX -= 8;
-        currentY -= 16;
-        ctx.lineTo(currentX, currentY);
-
-        //fourth line of ship
-        ctx.closePath();
-        ctx.stroke();
-        ctx.fillStyle = color;
-        ctx.fill()
+        //ctx.drawImage(ShipSVG, this.state.shipPosition.x, this.state.shipPosition.y)
         
     }
 
@@ -158,6 +129,7 @@ class Canvas extends Component{
         return(
             <div>
             <canvas ref="canvas" width = "1500px" height = "700px" style={{backgroundColor: `${this.state.backgroundColor}`}}></canvas>
+            <ShipSVG></ShipSVG>
             </div>
         )
     }
