@@ -11,6 +11,12 @@ class Canvas extends Component{
             shipPosition: {
                 x: 750,
                 y: 350
+            },
+            keyMap : {
+                w: false,
+                s: false,
+                a: false,
+                d: false
             }
         }
     }
@@ -64,41 +70,95 @@ class Canvas extends Component{
     }
 
 
-    move = (event) =>{
+    move = () =>{
         let prevState = {...this.state};
         let currentPosition = {...prevState.shipPosition}
-        const key = event.key
 
-            if(key === "w"){
+
+            if(this.state.keyMap.w){
                 currentPosition.y -= 5;
                 this.setState({shipPosition: currentPosition})
             }
 
-            if(key === "s"){
+            if(this.state.keyMap.s){
                 currentPosition.y += 5;
                 this.setState({shipPosition: currentPosition})
             }
 
-            if(key === "a"){
+            if(this.state.keyMap.a){
                 currentPosition.x -= 5;
                 this.setState({shipPosition: currentPosition})
             }
 
-            if(key === "d"){
+            if(this.state.keyMap.d){
                 currentPosition.x += 5;
                 this.setState({shipPosition: currentPosition})
             }
                 
          
-        this.drawShip(this.state.shipColor, 3);
+        this.drawShip(this.state.shipColor, 1);
+    }
+
+    drawCanvas = () => {
+        const ctx = this.refs.canvas.getContext('2d');
+        ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
+
+        this.move();
+    }
+
+    adjustKeyMap(event){
+        if(event.type === "keydown"){
+            const keyMap = {...this.state.keyMap}
+            switch(event.key){
+                case "w":
+                    keyMap.w = true;
+                    break;
+    
+                case "s":
+                    keyMap.s = true;
+                    break;
+        
+                case "a":
+                    keyMap.a = true;
+                    break;
+                
+                case "d":
+                    keyMap.d = true;
+                    break;
+                default:
+            }
+            this.setState({keyMap: keyMap})
+
+        }else if(event.type === "keyup"){        
+            const keyMap = {...this.state.keyMap}
+            switch(event.key){
+                case "w":
+                    keyMap.w = false;
+                    break;
+
+                case "s":
+                    keyMap.s = false;
+                    break;
+        
+                case "a":
+                    keyMap.a = false;
+                    break;
+                
+                case "d":
+                    keyMap.d = false;
+                    break;
+                default:
+            }
+            this.setState({keyMap: keyMap})
+        
+        }
     }
 
     componentDidMount(){
-        
-        this.drawShip(this.state.shipColor, 3);
+        setInterval(this.drawCanvas, 25)
 
-        window.addEventListener("keypress", (e) => {this.move(e)})
-        
+        window.addEventListener("keydown", (e) => {this.adjustKeyMap(e)})
+        window.addEventListener("keyup", (e) => {this.adjustKeyMap(e)})
     }
 
     render(){
