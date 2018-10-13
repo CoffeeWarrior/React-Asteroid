@@ -28,7 +28,11 @@ class Canvas extends Component{
         const ctx = this.refs.canvas.getContext('2d');
         
         //ctx.drawImage(ShipSVG, this.state.shipPosition.x, this.state.shipPosition.y)
-        
+        // var img = new Image();
+        // img.onload = function() {
+        //     ctx.drawImage(img, 50, 50);
+        // }
+        // img.src = "../stateless/shipDrawing.svg";
     }
 
     //updates the state to reflect movement by wsad and redraws the ship.
@@ -67,6 +71,7 @@ class Canvas extends Component{
         ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
 
         this.move();
+        
     }
 
     //updates keymap in state, will set boolean values to true or false on keydown and keyup 
