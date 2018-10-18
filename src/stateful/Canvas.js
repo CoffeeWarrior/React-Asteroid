@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ShipSVG from "../stateless/shipDrawing"
+import ShipSVG from "../stateless/svgImage"
 
 class Canvas extends Component{
     constructor(props){
@@ -27,12 +27,11 @@ class Canvas extends Component{
         
         const ctx = this.refs.canvas.getContext('2d');
         
-        //ctx.drawImage(ShipSVG, this.state.shipPosition.x, this.state.shipPosition.y)
-        // var img = new Image();
-        // img.onload = function() {
-        //     ctx.drawImage(img, 50, 50);
-        // }
-        // img.src = "../stateless/shipDrawing.svg";
+        var img = new Image(500,500);
+        img.onload = () => {
+            ctx.drawImage(img, this.state.shipPosition.x, this.state.shipPosition.y);
+        }
+        img.src = "/stateless/shipDrawing.svg";
     }
 
     //updates the state to reflect movement by wsad and redraws the ship.
