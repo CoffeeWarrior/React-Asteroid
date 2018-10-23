@@ -1,4 +1,5 @@
-<svg height="500" width="500">
-<polygon points="250,0 500,500 250,375 0,500"
+<?xml version="1.0" encoding="UTF-8" ?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1"  height="50" width="50">
+<polygon points="25,0 50,50 25,37.5 0,50"
 style="fill: #66CD00; stroke: #FFFFFF; stroke-width: 3; fill-rule: non-zero" />
 </svg>

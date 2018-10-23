@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import ShipSVG from "../stateless/svgImage"
-
+import ship from "../stateless/shipDrawing.svg"
 class Canvas extends Component{
     constructor(props){
         super(props);
@@ -24,14 +23,14 @@ class Canvas extends Component{
 
     //draws the ship. Used as a utility function by other this.move()
     drawShip(color, lineWidth){
-        
+        //need to move image outside of function, so it doesnt reload every time!
         const ctx = this.refs.canvas.getContext('2d');
         
-        var img = new Image(500,500);
+        var img = new Image(50,50);
         img.onload = () => {
             ctx.drawImage(img, this.state.shipPosition.x, this.state.shipPosition.y);
         }
-        img.src = "/stateless/shipDrawing.svg";
+        img.src = ship;
     }
 
     //updates the state to reflect movement by wsad and redraws the ship.
@@ -133,7 +132,7 @@ class Canvas extends Component{
         return(
             <div>
             <canvas ref="canvas" width = "1500px" height = "700px" style={{backgroundColor: `${this.state.backgroundColor}`}}></canvas>
-            <ShipSVG></ShipSVG>
+            <img src={ship}></img>
             </div>
         )
     }
