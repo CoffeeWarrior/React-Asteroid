@@ -8,8 +8,8 @@ class Canvas extends Component{
         this.state = {
             backgroundColor: "#000",
             shipPosition: {
-                x: 0,
-                y: 0
+                x: 750,
+                y: 350
             },
             keyMap : {
                 w: false,
@@ -19,7 +19,7 @@ class Canvas extends Component{
             },
             shipIMG : null,
             shipLoaded: false,
-            planeAngle : 0
+            shipAngle: 0
         }
     }
 
@@ -30,56 +30,70 @@ class Canvas extends Component{
     drawShip(){
         const ctx = this.refs.canvas.getContext('2d');
         if(this.state.shipLoaded){
-
+            ctx.save(); 
+ 
+            // move the origin to 50, 35   
+            ctx.translate(this.state.shipPosition.x, this.state.shipPosition.y); 
+            
+            // now move across and down half the 
+            // width and height of the image (which is 128 x 128)
+            ctx.translate(25,25); 
+            
+            // rotate around this point
+            ctx.rotate(this.state.shipAngle * Math.PI/180); 
+            
+            // then draw the image back and up
+            ctx.drawImage(this.state.shipIMG, -25, -25); 
+            
+            // and restore the co-ordinate system to its default
+            // top left origin with no rotation
+            ctx.restore();
             // ctx.rotate(20 * Math.PI / 180);
             //commented will cause spinning, need to adjust the canvas angle outside of 
-            ctx.drawImage(this.state.shipIMG, this.state.shipPosition.x, this.state.shipPosition.y)
+            //ctx.drawImage(this.state.shipIMG, this.state.shipPosition.x, this.state.shipPosition.y)
         }
 
         
     }
 
+
     //updates the state to reflect movement by wsad and redraws the ship.
     move = () =>{
         let prevState = {...this.state};
         let currentPosition = {...prevState.shipPosition}
-
+        
 
         if(this.state.keyMap.w){
             currentPosition.y -= 5;
-            this.setState({shipPosition: currentPosition})
         }
 
         if(this.state.keyMap.s){
             currentPosition.y += 5;
-            this.setState({shipPosition: currentPosition})
         }
 
         if(this.state.keyMap.a){
             currentPosition.x -= 5;
-            this.setState({shipPosition: currentPosition})
         }
 
         if(this.state.keyMap.d){
             currentPosition.x += 5;
-            this.setState({shipPosition: currentPosition})
         }
-        
+        this.setState({shipPosition: currentPosition})
         this.drawShip();
     }
 
     //function called by setInterval, responsible for redraws of the canvas.
     drawCanvas = () => {
         const ctx = this.refs.canvas.getContext('2d');
-        ctx.clearRect(-this.refs.canvas.width/2, this.refs.canvas.height/2, this.refs.canvas.width/2, this.refs.canvas.height/2);
+        ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
 
         this.move();
         
     }
 
-    //updates keymap in state, will set boolean values to true or false on keydown and keyup 
+    //updates keymap in state, will set values to true or false on keydown and keyup 
+    //change setState to return values, find where to update state elsewhere and move to adjustKeyMap.js
     adjustKeyMap(event){
-        let directionChange = true;
         if(event.type === "keydown"){
             const keyMap = {...this.state.keyMap}
             switch(event.key){
@@ -98,7 +112,6 @@ class Canvas extends Component{
                     keyMap.d = true;
                     break;
                 default:
-                    directionChange = false;
                     break;
             }
             this.setState({keyMap: keyMap})
@@ -122,7 +135,6 @@ class Canvas extends Component{
                     keyMap.d = false;
                     break;
                 default:
-                    directionChange = false;
             }
 
             this.setState({keyMap: keyMap})
@@ -140,8 +152,6 @@ class Canvas extends Component{
     }
 
     componentDidMount(){
-        const ctx = this.refs.canvas.getContext('2d');
-        ctx.translate(750, 325);
         setInterval(this.drawCanvas, 25)
         this.setShip();
         window.addEventListener("keydown", (e) => {this.adjustKeyMap(e)})
