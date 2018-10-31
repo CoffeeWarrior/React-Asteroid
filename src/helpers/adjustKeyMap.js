@@ -1,5 +1,4 @@
     //updates keymap in state, will set values to true or false on keydown and keyup 
-    //change setState to return values, find where to update state elsewhere and move to adjustKeyMap.js
     const adjustKeyMap = (event, keyMapInput) =>{
         if(event.type === "keydown"){
             const keyMap = {...keyMapInput}
