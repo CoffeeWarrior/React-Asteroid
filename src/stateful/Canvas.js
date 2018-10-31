@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ship from "../stateless/shipDrawing.svg"
+import adjustKeyMap from "../helpers/adjustKeyMap"
 class Canvas extends Component{
     constructor(props){
         super(props);
@@ -91,56 +92,7 @@ class Canvas extends Component{
         
     }
 
-    //updates keymap in state, will set values to true or false on keydown and keyup 
-    //change setState to return values, find where to update state elsewhere and move to adjustKeyMap.js
-    adjustKeyMap(event){
-        if(event.type === "keydown"){
-            const keyMap = {...this.state.keyMap}
-            switch(event.key){
-                case "w":
-                    keyMap.w = true;
-                    break;
-                case "s":
-                    keyMap.s = true;
-                    break;
-        
-                case "a":
-                    keyMap.a = true;
-                    break;
-                
-                case "d":
-                    keyMap.d = true;
-                    break;
-                default:
-                    break;
-            }
-            this.setState({keyMap: keyMap})
 
-        }else if(event.type === "keyup"){        
-            const keyMap = {...this.state.keyMap}
-            switch(event.key){
-                case "w":
-                    keyMap.w = false;
-                    break;
-
-                case "s":
-                    keyMap.s = false;
-                    break;
-        
-                case "a":
-                    keyMap.a = false;
-                    break;
-                
-                case "d":
-                    keyMap.d = false;
-                    break;
-                default:
-            }
-
-            this.setState({keyMap: keyMap})
-        
-        }
-    }
 
 
     setShip = () => {
@@ -154,8 +106,12 @@ class Canvas extends Component{
     componentDidMount(){
         setInterval(this.drawCanvas, 25)
         this.setShip();
-        window.addEventListener("keydown", (e) => {this.adjustKeyMap(e)})
-        window.addEventListener("keyup", (e) => {this.adjustKeyMap(e)})
+        window.addEventListener("keydown", (e) => {
+            this.setState({keyMap: adjustKeyMap(e, this.state.keyMap)})
+        })
+        window.addEventListener("keyup", (e) => {
+            this.setState({keyMap: adjustKeyMap(e, this.state.keyMap)})
+        })
     }
 
     render(){
