@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ship from "../../stateless/shipDrawing.svg"
+import ship from "../../svgs/ship.svg"
 import adjustKeyMap from "../../helpers/ship-related/adjustKeyMap"
 import updateShipAngle from "../../helpers/ship-related/updateShipAngle"
 
