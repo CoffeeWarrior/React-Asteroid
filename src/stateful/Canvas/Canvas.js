@@ -1,16 +1,16 @@
 import React, { Component } from "react";
-import ship from "../stateless/shipDrawing.svg"
-import adjustKeyMap from "../helpers/adjustKeyMap"
+import ship from "../../stateless/shipDrawing.svg"
+import adjustKeyMap from "../../helpers/ship-related/adjustKeyMap"
+import updateShipAngle from "../../helpers/ship-related/updateShipAngle"
+
 class Canvas extends Component{
     constructor(props){
         super(props);
-
-
         this.state = {
             backgroundColor: "#000",
             shipPosition: {
-                x: 750,
-                y: 350
+                x: 0,
+                y: 0
             },
             keyMap : {
                 w: false,
@@ -27,7 +27,7 @@ class Canvas extends Component{
     
     
 
-    //draws the ship. Used as a utility function by other this.move()
+    //draws the ship. Used as a utility function by other this.moveShip()
     drawShip(){
         const ctx = this.refs.canvas.getContext('2d');
         if(this.state.shipLoaded){
@@ -59,7 +59,7 @@ class Canvas extends Component{
 
 
     //updates the state to reflect movement by wsad and redraws the ship.
-    move = () =>{
+    moveShip = () =>{
         let prevState = {...this.state};
         let currentPosition = {...prevState.shipPosition}
         
@@ -88,14 +88,14 @@ class Canvas extends Component{
         const ctx = this.refs.canvas.getContext('2d');
         ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
 
-        this.move();
+        this.moveShip();
         
     }
 
 
 
 
-    setShip = () => {
+    loadShip = () => {
         var img = new Image(50,50);
         img.onload = () => {
             this.setState({shipIMG: img, shipLoaded: true})
@@ -104,20 +104,28 @@ class Canvas extends Component{
     }
 
     componentDidMount(){
+        const canvas = this.refs.canvas;
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        this.setState({shipPosition: {x: this.refs.canvas.width/2, y: this.refs.canvas.height/2}})
         setInterval(this.drawCanvas, 25)
-        this.setShip();
+        this.loadShip();
         window.addEventListener("keydown", (e) => {
-            this.setState({keyMap: adjustKeyMap(e, this.state.keyMap)})
+            this.setState({keyMap: adjustKeyMap(e, this.state.keyMap)}, ()=> {
+                this.setState({shipAngle: updateShipAngle({...this.state.keyMap})})
+            })
         })
         window.addEventListener("keyup", (e) => {
-            this.setState({keyMap: adjustKeyMap(e, this.state.keyMap)})
+            this.setState({keyMap: adjustKeyMap(e, this.state.keyMap)}, ()=> {
+                this.setState({shipAngle: updateShipAngle({...this.state.keyMap})})
+            })
         })
     }
 
     render(){
         return(
             <div>
-            <canvas ref="canvas" height = "750" width = "1500"  style={{backgroundColor: `${this.state.backgroundColor}`}}></canvas>
+            <canvas ref="canvas" style={{boxSizing: "border-box", backgroundColor: "black", padding: "0px"}}></canvas>
             </div>
         )
     }
