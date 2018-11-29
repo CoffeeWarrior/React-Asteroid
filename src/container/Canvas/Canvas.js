@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 //ship
 import ship from "../../svgs/ship.svg"
 import adjustKeyMap from "../../helpers/ship-related/adjustKeyMap"
@@ -64,8 +65,8 @@ class Canvas extends Component{
     }
 
     //draws asteroid and updates its position for next redraw
-    //also clears out asteroids from asteroidArray
-    moveAsteroid = () => {
+    //checks if ship is within asteroid range
+    updateAsteroid = () => {
         const ctx = this.refs.canvas.getContext('2d');
         //moves every asteroid in the asteroid array
         if(this.state.asteroidLoaded){
@@ -73,16 +74,27 @@ class Canvas extends Component{
             for(var i = 0; i < this.state.asteroidArray.length; i++){
                 drawAsteroid(ctx, this.state.asteroidArray[i])
                 asteroidArray[i].incrementPosition();
+                if(asteroidArray[i].insideAsteroid(this.state.shipPosition.x, this.state.shipPosition.y)){
+                    console.log("boom dead")
+                } else {
+                    console.log("alive")
+                }
+                
             }
-            //filters out anything that exceeds the width of the canvas
-            //this portion does cleanup on the array, doesnt need to be as frequently checked
-            const updatedAsteroidArray = asteroidArray.filter(asteroid => {
-                let remainInArray = asteroid.position.x < this.refs.canvas.width && asteroid.position.x > 0
-                return remainInArray;  
-            })
-            this.setState({asteroidArray: updatedAsteroidArray});
+            this.setState({asteroidArray: asteroidArray});
         }
-        console.log(this.state.asteroidArray.length)
+    }
+
+    
+    //filters out anything that exceeds the width of the canvas
+    //this portion does cleanup on the array, doesnt need to be as frequently checked
+    decrementAsteroidArray = () => {
+        const asteroidArray = [...this.state.asteroidArray]
+        const updatedAsteroidArray = asteroidArray.filter(asteroid => {
+            let remainInArray = asteroid.position.x < this.refs.canvas.width && asteroid.position.x > 0
+            return remainInArray;  
+        })
+        this.setState({asteroidArray: updatedAsteroidArray});
     }
     
 
@@ -91,7 +103,7 @@ class Canvas extends Component{
         const ctx = this.refs.canvas.getContext('2d');
         ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
         this.moveShip();
-        this.moveAsteroid();
+        this.updateAsteroid();
     }
     
     //adds new asteroid objects to asteroidArray 
@@ -109,8 +121,8 @@ class Canvas extends Component{
         var img = new Image(50,50);
         img.onload = () => {
             this.setState({asteroidLoaded: true, asteroidIMG: img})
-            
-            setInterval(this.incrementAsteroidArray, 600);
+            this.incrementAsteroidArray();
+            // setInterval(this.incrementAsteroidArray, 600);
         }
         img.src = asteroid;
     }
@@ -130,6 +142,7 @@ class Canvas extends Component{
         canvas.width = window.innerWidth;
         this.setState({shipPosition: {x: this.refs.canvas.width/2, y: this.refs.canvas.height/2}})
         
+        setInterval(this.decrementAsteroidArray, 5000);
         setInterval(this.drawCanvas, 25)
         this.loadShip();
         this.loadAsteroid();    

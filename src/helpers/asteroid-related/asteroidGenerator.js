@@ -13,8 +13,16 @@ const asteroidGenerator = (shipPosition, cHeight, cWidth, asteroidIMG) => {
             dy: 0
         },
         incrementPosition: () => {
+            //increments asteroid position for next redraw
             asteroid.position.x += asteroid.direction.dx;
             asteroid.position.y += asteroid.direction.dy;
+        },
+        insideAsteroid: (sx, sy) => {
+            //this function will check if the ships position is inside of the asteroid
+            //uses distance formula from the radius to determine if ship is within radius of the asteroid 
+            //returns false if not inside asteroid
+            const distance = Math.sqrt(Math.pow(sx - asteroid.position.x, 2) + Math.pow(sy - asteroid.position.y, 2) )
+            return 50 >= distance;
         },
         asteroidIMG: asteroidIMG,
         negateX: false,
@@ -40,6 +48,8 @@ const asteroidGenerator = (shipPosition, cHeight, cWidth, asteroidIMG) => {
             asteroid.position.x = cWidth;
             asteroid.position.y = Math.random() * cHeight;
             break;
+        default:
+            return 0;
     }
 
     
