@@ -75,10 +75,14 @@ class Canvas extends Component{
                 drawAsteroid(ctx, this.state.asteroidArray[i])
                 asteroidArray[i].incrementPosition();
                 if(asteroidArray[i].insideAsteroid(this.state.shipPosition.x, this.state.shipPosition.y)){
-                    console.log("boom dead")
-                } else {
-                    console.log("alive")
-                }
+                    clearInterval(this.state.intervalRedraw)
+
+                    //delete below later, was testing positions
+                    console.log(`ship: (${this.state.shipPosition.x}, ${this.state.shipPosition.y})`)
+                    console.log(`asteroid: (${asteroidArray[i].position.x}, ${asteroidArray[i].position.y})`)
+                    //delete below later, was testing hitboxes
+                    ctx.fillRect(asteroidArray[i].position.x, asteroidArray[i].position.y,5,5)
+                } 
                 
             }
             this.setState({asteroidArray: asteroidArray});
@@ -101,7 +105,12 @@ class Canvas extends Component{
     //function called by setInterval, responsible for redraws of the canvas.
     drawCanvas = () => {
         const ctx = this.refs.canvas.getContext('2d');
+        
         ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
+        //delete below later, was testing hitboxes
+        ctx.fillStyle = "Red"
+        ctx.fillRect(this.state.shipPosition.x, this.state.shipPosition.y,5,5)
+        
         this.moveShip();
         this.updateAsteroid();
     }
@@ -121,8 +130,8 @@ class Canvas extends Component{
         var img = new Image(50,50);
         img.onload = () => {
             this.setState({asteroidLoaded: true, asteroidIMG: img})
-            this.incrementAsteroidArray();
-            // setInterval(this.incrementAsteroidArray, 600);
+            
+            setInterval(this.incrementAsteroidArray, 600);
         }
         img.src = asteroid;
     }
@@ -143,7 +152,8 @@ class Canvas extends Component{
         this.setState({shipPosition: {x: this.refs.canvas.width/2, y: this.refs.canvas.height/2}})
         
         setInterval(this.decrementAsteroidArray, 5000);
-        setInterval(this.drawCanvas, 25)
+        const intervalRedraw = setInterval(this.drawCanvas, 25)
+        this.setState({intervalRedraw});
         this.loadShip();
         this.loadAsteroid();    
         window.addEventListener("keydown", (e) => {
