@@ -20,6 +20,12 @@ class Canvas extends Component{
                 x: 0,
                 y: 0
             },
+            shipHitBox: {
+                //this object represents the "shipPosition" + half the width of the img and half the height.
+                //the image is drawn from the left hand corner!
+                x: 0,
+                y: 0
+            },
             keyMap : {
                 w: false,
                 s: false,
@@ -32,7 +38,6 @@ class Canvas extends Component{
             asteroidIMG: null,
             asteroidLoaded: false,
             asteroidArray: []
-        
         }
     }
 
@@ -41,48 +46,49 @@ class Canvas extends Component{
     
     //updates the state to reflect movement by wsad and redraws the ship.
     moveShip = () =>{
-        let prevState = {...this.state};
-        let currentPosition = {...prevState.shipPosition}
-        
+        if(this.state.shipLoaded){
+            let prevState = {...this.state};
+            let currentPosition = {...prevState.shipPosition}
+            
 
-        if(this.state.keyMap.w){
-            currentPosition.y -= 7;
-        }
+            if(this.state.keyMap.w){
+                currentPosition.y -= 7;
+            }
 
-        if(this.state.keyMap.s){
-            currentPosition.y += 7;
-        }
+            if(this.state.keyMap.s){
+                currentPosition.y += 7;
+            }
 
-        if(this.state.keyMap.a){
-            currentPosition.x -= 7;
-        }
+            if(this.state.keyMap.a){
+                currentPosition.x -= 7;
+            }
 
-        if(this.state.keyMap.d){
-            currentPosition.x += 7;
-        }
-        this.setState({shipPosition: currentPosition})
-        drawShip(this.refs.canvas.getContext('2d'), this.state);
+            if(this.state.keyMap.d){
+                currentPosition.x += 7;
+            }
+            this.setState({shipPosition: currentPosition})
+            drawShip(this.refs.canvas.getContext('2d'), this.state);
+            
+            const shipHitBox = {x: currentPosition.x + (this.state.shipIMG.width/2), y: currentPosition.y + (this.state.shipIMG.height/2)}
+            console.log(shipHitBox.y)
+            this.setState({shipHitBox: shipHitBox})
+            }
     }
 
     //draws asteroid and updates its position for next redraw
     //checks if ship is within asteroid range
     updateAsteroid = () => {
-        const ctx = this.refs.canvas.getContext('2d');
         //moves every asteroid in the asteroid array
         if(this.state.asteroidLoaded){
+            const ctx = this.refs.canvas.getContext('2d');
             const asteroidArray = [...this.state.asteroidArray]
             for(var i = 0; i < this.state.asteroidArray.length; i++){
                 drawAsteroid(ctx, this.state.asteroidArray[i])
-                asteroidArray[i].incrementPosition();
-                if(asteroidArray[i].insideAsteroid(this.state.shipPosition.x, this.state.shipPosition.y)){
-                    clearInterval(this.state.intervalRedraw)
-
-                    //delete below later, was testing positions
-                    console.log(`ship: (${this.state.shipPosition.x}, ${this.state.shipPosition.y})`)
-                    console.log(`asteroid: (${asteroidArray[i].position.x}, ${asteroidArray[i].position.y})`)
-                    //delete below later, was testing hitboxes
-                    ctx.fillRect(asteroidArray[i].position.x, asteroidArray[i].position.y,5,5)
+                if(asteroidArray[i].insideAsteroid(this.state.shipHitBox.x, this.state.shipHitBox.y)){
+                    
+                    clearInterval(this.state.intervalRedraw)    
                 } 
+                asteroidArray[i].incrementPosition();
                 
             }
             this.setState({asteroidArray: asteroidArray});
@@ -107,9 +113,6 @@ class Canvas extends Component{
         const ctx = this.refs.canvas.getContext('2d');
         
         ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
-        //delete below later, was testing hitboxes
-        ctx.fillStyle = "Red"
-        ctx.fillRect(this.state.shipPosition.x, this.state.shipPosition.y,5,5)
         
         this.moveShip();
         this.updateAsteroid();
@@ -127,7 +130,7 @@ class Canvas extends Component{
     }
 
     loadAsteroid = () => {
-        var img = new Image(50,50);
+        var img = new Image(100,100);
         img.onload = () => {
             this.setState({asteroidLoaded: true, asteroidIMG: img})
             

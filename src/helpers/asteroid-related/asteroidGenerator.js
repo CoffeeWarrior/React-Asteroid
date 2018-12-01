@@ -21,8 +21,16 @@ const asteroidGenerator = (shipPosition, cHeight, cWidth, asteroidIMG) => {
             //this function will check if the ships position is inside of the asteroid
             //uses distance formula from the radius to determine if ship is within radius of the asteroid 
             //returns false if not inside asteroid
-            const distance = Math.sqrt(Math.pow(sx - asteroid.position.x, 2) + Math.pow(sy - asteroid.position.y, 2) )
-            return 50 >= distance;
+            
+            //because position is drawn from the top left hand corner of the svg, I survey the area around the center of the circle by adjusting "position" 
+            //of the asteroid to be centered
+            const hitboxPositionX = asteroid.position.x + (asteroid.asteroidIMG.width/2);
+            const hitboxPositionY = asteroid.position.y + (asteroid.asteroidIMG.height/2);
+            
+            const distance = Math.sqrt(Math.pow(sx -  hitboxPositionX, 2) + Math.pow(sy - hitboxPositionY, 2) )
+
+            //50 is width of asteroid, the extra 5 is to account for being close to the asteroid
+            return 55 >= distance;
         },
         asteroidIMG: asteroidIMG,
         negateX: false,
