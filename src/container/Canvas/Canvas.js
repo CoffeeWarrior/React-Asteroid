@@ -77,7 +77,6 @@ class Canvas extends Component{
             drawShip(this.refs.canvas.getContext('2d'), this.state);
             
             const shipHitBox = {x: currentPosition.x + (this.state.shipIMG.width/2), y: currentPosition.y + (this.state.shipIMG.height/2)}
-            console.log(shipHitBox.y)
             this.setState({shipHitBox: shipHitBox})
             }
     }
