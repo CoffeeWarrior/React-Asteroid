@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Canvas from "./container/Canvas/Canvas";
-
 class App extends Component {
   render() {
     return (

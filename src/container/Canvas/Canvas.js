@@ -1,5 +1,11 @@
 import React, { Component } from "react";
 
+//score
+import Score from "../Score/Score"
+
+//loseScreen
+import LoseScreen from "../../presentational/loseScreen"
+
 //ship
 import ship from "../../svgs/ship.svg"
 import adjustKeyMap from "../../helpers/ship-related/adjustKeyMap"
@@ -37,7 +43,8 @@ class Canvas extends Component{
             shipAngle: 0,
             asteroidIMG: null,
             asteroidLoaded: false,
-            asteroidArray: []
+            asteroidArray: [],
+            lost: false
         }
     }
 
@@ -85,7 +92,7 @@ class Canvas extends Component{
             for(var i = 0; i < this.state.asteroidArray.length; i++){
                 drawAsteroid(ctx, this.state.asteroidArray[i])
                 if(asteroidArray[i].insideAsteroid(this.state.shipHitBox.x, this.state.shipHitBox.y)){
-                    
+                    this.setState({lost: true})
                     clearInterval(this.state.intervalRedraw)    
                 } 
                 asteroidArray[i].incrementPosition();
@@ -172,9 +179,15 @@ class Canvas extends Component{
     }
 
     render(){
+        let loseScreen = null;
+        if(this.state.lost){
+            loseScreen = (<LoseScreen></LoseScreen>)
+        }
         return(
             <div>
-            <canvas ref="canvas" style={{boxSizing: "border-box", backgroundColor: "black", padding: "0px"}}></canvas>
+            <Score lost={this.state.lost}></Score>
+            <canvas ref="canvas" style={{boxSizing: "border-box", backgroundColor: "black", padding: "0px", position: "relative"}}></canvas>
+            {loseScreen}
             </div>
         )
     }

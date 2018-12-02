@@ -42,14 +42,14 @@ const asteroidGenerator = (shipPosition, cHeight, cWidth, asteroidIMG) => {
     switch(walls[Math.floor(Math.random()* 4)]){
         case "top":
             asteroid.position.x = Math.random() * cWidth;
-            asteroid.position.y = 0;
+            asteroid.position.y = -100;
             break;
         case "bottom":
             asteroid.position.x = Math.random() * cWidth;
             asteroid.position.y = cHeight;
             break;
         case "left":
-            asteroid.position.x = 0;
+            asteroid.position.x = -100;
             asteroid.position.y = Math.random() * cHeight;
             break;
         case "right":
