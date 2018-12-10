@@ -17,6 +17,7 @@ import asteroid from "../../svgs/asteroid.svg"
 import asteroidGenerator from "../../helpers/asteroid-related/asteroidGenerator"
 import drawAsteroid from "../../helpers/asteroid-related/drawAsteroid";
 
+
 class Canvas extends Component{
     constructor(props){
         super(props);
@@ -44,12 +45,10 @@ class Canvas extends Component{
             asteroidIMG: null,
             asteroidLoaded: false,
             asteroidArray: [],
-            lost: false
+            lost: false,
+            restart: false
         }
     }
-
-    
-    
     
     //updates the state to reflect movement by wsad and redraws the ship.
     moveShip = () =>{
@@ -153,8 +152,8 @@ class Canvas extends Component{
         img.src = ship;
     }
 
-
-    componentDidMount(){
+    start = () => {
+        this.setState({restart: false, lost: false, asteroidArray: []})
         const canvas = this.refs.canvas;
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
@@ -163,6 +162,12 @@ class Canvas extends Component{
         setInterval(this.decrementAsteroidArray, 5000);
         const intervalRedraw = setInterval(this.drawCanvas, 25)
         this.setState({intervalRedraw});
+        
+    }
+
+    componentDidMount(){
+        //remove listeners on loss
+        this.start();
         this.loadShip();
         this.loadAsteroid();    
         window.addEventListener("keydown", (e) => {
@@ -177,10 +182,15 @@ class Canvas extends Component{
         })
     }
 
+    componentDidUpdate(){
+        if(this.state.restart){
+            this.start();
+        }
+    }
     render(){
         let loseScreen = null;
         if(this.state.lost){
-            loseScreen = (<LoseScreen></LoseScreen>)
+            loseScreen = (<LoseScreen  onClick={() => this.setState({restart: true})}></LoseScreen>)
         }
         return(
             <div>
