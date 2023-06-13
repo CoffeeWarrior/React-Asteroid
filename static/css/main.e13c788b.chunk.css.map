@@ -1,0 +1,1 @@
+{"version":3,"sources":["/Users/lucas/Projects/React-Asteroid/src/index.css","main.e13c788b.chunk.css"],"names":[],"mappings":"AAAA,KACI,QAAA,CACA,SAAA,CACA,eCCF","file":"main.e13c788b.chunk.css","sourcesContent":["body {\n    margin: 0;\n    padding: 0;\n    overflow: hidden;\n  }","body {\n    margin: 0;\n    padding: 0;\n    overflow: hidden;\n  }\n"]}
